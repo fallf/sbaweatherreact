@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-
+import DateObject from "react-date-object";
 import React from "react";
 
 function Weather() {
@@ -61,11 +61,20 @@ function Weather() {
   console.log(weather);
 
   const loaded = () => {
+    let date = new DateObject(weather.dt);
+
     return (
       <div>
-        <h2>Weather in {cityName}</h2>
-        <p>Temperature: {(weather.main.temp - 273.15).toFixed(2)}°C</p>
+        <h2>Weather in {weather.name}</h2>
+        <p>
+          Temperature:{" "}
+          {((weather.main.temp - 273.15) * (9 / 5) + 32).toFixed(2)} °F
+        </p>
         <p>Condition: {weather.weather[0].description}</p>
+        <p>
+          The date:{" "}
+          {new Date((weather.dt + weather.timezone) * 1000).toLocaleString()}
+        </p>
       </div>
     );
   };
@@ -73,11 +82,13 @@ function Weather() {
     return <h1> Loading...</h1>;
   };
   return weather &&
+    weather.name &&
     weather.main &&
     weather.main.temp &&
     weather.weather &&
     weather.weather[0] &&
-    weather.weather[0].description
+    weather.weather[0].description &&
+    weather.dt
     ? loaded()
     : loading();
 }
