@@ -17,17 +17,20 @@ function Form(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="formweather" onSubmit={handleSubmit}>
       {" "}
       {/* Use onSubmit here */}
       <input
+        className="searchbar"
         type="text"
         name="searchterm"
         placeholder="Enter city name"
         onChange={handleChange}
         value={formData.searchterm}
       />
-      <button type="submit">Submit</button>
+      <button className="buttonweather" type="submit">
+        Submit
+      </button>
     </form>
   );
 }

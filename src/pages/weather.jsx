@@ -39,19 +39,21 @@ function Weather({ searchterm }) {
   // Render weather data
   const loaded = () => {
     return (
-      <div>
-        <h2>Weather in {weather.name}</h2>
-        <p>
+      <div className="weatherbox">
+        <h2 className="weatherlocation">Weather in {weather.name}</h2>
+        <p className="weathertemp">
           Temperature:{" "}
           {((weather.main.temp - 273.15) * (9 / 5) + 32).toFixed(2)} °F
         </p>
-        <p>Condition: {weather.weather[0].description}</p>
+        <p className="weatheconditions">
+          Condition: {weather.weather[0].description}
+        </p>
       </div>
     );
   };
 
   const loading = () => {
-    return <h1>Please enter a city</h1>;
+    return <h3>Please enter a city</h3>;
   };
 
   return weather ? loaded() : loading();
