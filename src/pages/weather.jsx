@@ -1,68 +1,43 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router";
-import DateObject from "react-date-object";
 import React from "react";
 
-function Weather() {
-  const apiKey = import.meta.env.VITE_ACCESKEY;
-  const params = useParams();
-  const cityName = params.name;
+function Weather({ searchterm }) {
+  const apiKey = import.meta.env.VITE_ACCESKEY; // Your API key from the .env file
 
-  const url = `http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid=${apiKey}`;
+  const [weather, setWeather] = useState(null); // State for weather data
 
-  // State to hold the location data
-  const [location, setLocation] = useState("null");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  // State to hold weather data
-  const [weather, setWeather] = useState(null);
-  //function to fetch the location data
+  // Function to fetch weather data based on the search term
+  const getWeather = async (searchterm) => {
+    if (!searchterm) return;
 
-  const getLocation = async () => {
+    const locationUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchterm}&limit=5&appid=${apiKey}`;
+
     try {
-      const responce = await fetch(url);
-      const data = await responce.json();
-      setLocation(data);
+      const locationResponse = await fetch(locationUrl);
+      const locationData = await locationResponse.json();
 
-      // Extract lat/lon from the first result
-      if (data.length > 0) {
-        setLatitude(data[0].lat);
-        setLongitude(data[0].lon);
+      if (locationData.length > 0) {
+        const { lat, lon } = locationData[0];
+        const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+        const weatherResponse = await fetch(weatherUrl);
+        const weatherData = await weatherResponse.json();
+        setWeather(weatherData); // Save weather data to state
+      } else {
+        setWeather(null); // Clear weather if no results
+        console.error("No location data found.");
       }
     } catch (error) {
-      console.error(error);
-    }
-  };
-  const getWeather = async (lat, lon) => {
-    if (lat && lon) {
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-      try {
-        const response = await fetch(weatherUrl);
-        const weatherData = await response.json();
-        setWeather(weatherData);
-      } catch (error) {
-        console.error("Error fetching weather data:", error);
-      }
+      console.error("Error fetching weather data:", error);
     }
   };
 
+  // useEffect to fetch weather when searchterm changes
   useEffect(() => {
-    getLocation(getLocation);
-  }, []);
+    getWeather(searchterm);
+  }, [searchterm]);
 
-  console.log(location[0]);
-
-  useEffect(() => {
-    if (latitude && longitude) {
-      getWeather(latitude, longitude);
-    }
-  }, [latitude, longitude]);
-
-  console.log(weather);
-
+  // Render weather data
   const loaded = () => {
-    let date = new DateObject(weather.dt);
-
     return (
       <div>
         <h2>Weather in {weather.name}</h2>
@@ -71,25 +46,15 @@ function Weather() {
           {((weather.main.temp - 273.15) * (9 / 5) + 32).toFixed(2)} °F
         </p>
         <p>Condition: {weather.weather[0].description}</p>
-        <p>
-          The date:{" "}
-          {new Date((weather.dt + weather.timezone) * 1000).toLocaleString()}
-        </p>
       </div>
     );
   };
+
   const loading = () => {
-    return <h1> Loading...</h1>;
+    return <h1>Please enter a city</h1>;
   };
-  return weather &&
-    weather.name &&
-    weather.main &&
-    weather.main.temp &&
-    weather.weather &&
-    weather.weather[0] &&
-    weather.weather[0].description &&
-    weather.dt
-    ? loaded()
-    : loading();
+
+  return weather ? loaded() : loading();
 }
+
 export default Weather;
