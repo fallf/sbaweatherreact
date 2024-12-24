@@ -10,7 +10,7 @@ function Weather({ searchterm }) {
   const getWeather = async (searchterm) => {
     if (!searchterm) return;
 
-    const locationUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchterm}&limit=5&appid=${apiKey}`;
+    const locationUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${searchterm}&limit=5&appid=${apiKey}`;
 
     try {
       const locationResponse = await fetch(locationUrl);
@@ -46,7 +46,7 @@ function Weather({ searchterm }) {
           {((weather.main.temp - 273.15) * (9 / 5) + 32).toFixed(2)} °F
         </p>
         <img
-          src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+          src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
           alt={weather.weather[0].description}
         />
         <p className="weatheconditions">
