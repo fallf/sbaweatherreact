@@ -45,6 +45,10 @@ function Weather({ searchterm }) {
           Temperature:{" "}
           {((weather.main.temp - 273.15) * (9 / 5) + 32).toFixed(2)} °F
         </p>
+        <img
+          src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+          alt={weather.weather[0].description}
+        />
         <p className="weatheconditions">
           Condition: {weather.weather[0].description}
         </p>

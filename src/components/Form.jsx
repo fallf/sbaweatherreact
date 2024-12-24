@@ -24,7 +24,7 @@ function Form(props) {
         className="searchbar"
         type="text"
         name="searchterm"
-        placeholder="Enter city name"
+        placeholder="Enter City Name"
         onChange={handleChange}
         value={formData.searchterm}
       />

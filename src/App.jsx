@@ -17,14 +17,14 @@ function App() {
   return (
     <>
       <VideoBackground /> {/* Video background should be first */}
+      <Heading />{" "}
       <div className="content">
-        <Heading />
         <Form weathersearch={getWeather} />
         <Routes>
           <Route path="/" element={<Weather searchterm={searchterm} />} />
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }
